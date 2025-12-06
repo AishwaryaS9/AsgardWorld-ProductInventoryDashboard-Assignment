@@ -10,7 +10,7 @@ import DeleteModal from '../components/DeleteModal';
 
 const Dashboard = () => {
     const CATEGORIES: Category[] = ['electronics', 'furniture', 'stationery'];
-    const [products, setProducts] = useLocalStorage<Product[]>('products_v1', MOCK_DATA);
+    const [products, setProducts] = useLocalStorage<Product[]>('products_data', MOCK_DATA);
     const [query, setQuery] = useState('');
     const [filterCategory, setFilterCategory] = useState<string>('all');
     const [filterStock, setFilterStock] = useState<string>('all');

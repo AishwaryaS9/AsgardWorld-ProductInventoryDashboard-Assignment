@@ -1,73 +1,109 @@
-# React + TypeScript + Vite
+# Product Inventory Dashboard
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A single-page React + TypeScript application for managing product inventory with full CRUD functionality, search/filter features, and persistent local storage.
 
-Currently, two official plugins are available:
+🔗 **Live Demo:** http://localhost:5173
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🛠 Tech Stack
 
-## React Compiler
+- React + TypeScript
+- Vite
+- Custom hooks (e.g., `useLocalStorage`)
+- Modular, component-based structure
+- Tailwind CSS for styling
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### 🚀 Setup Instructions
 
-## Expanding the ESLint configuration
+1.  Clone the repository:
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+    ```bash
+    git clone https://github.com/AishwaryaS9/AsgardWorld-ProductInventoryDashboard-Assignment.git
+    ```
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+2.  Navigate to the project directory:
+    ```bash
+    cd AsgardWorld-ProductInventoryDashboard-Assignment-main
+    ```
+3.  Install dependencies:
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+    ```bash
+    npm install
+    ```
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+4.  Run the application:
+
+    ```bash
+    npm run dev
+    ```
+
+5.  Open [http://localhost:5173](http://localhost:5173) in your browser to see the app.
+
+## 📁 Folder Structure & Approach
+
+A simplified view of the structure:
+
+```bash
+productinventorydashboard/
+├── public/                 # Static assets served directly
+├── src/
+│ ├── App.tsx               # Root component
+│ ├── assets/               # App images
+│ ├── components/           # Reusable UI components
+│ │ ├── DeleteModal.tsx     # Modal for confirming product deletion
+│ │ ├── ProductCard.tsx     # Card layout for displaying product info
+│ │ ├── ProductModal.tsx    # Modal for adding/editing products
+│ ├── hooks/
+│ │ ├── useLocalStorage.ts  # Custom hook for persisted state storage
+│ ├── pages/
+│ │ ├── Dashboard.tsx       # Main page showing product list and controls
+│ ├── types.ts              # Shared TypeScript types
+│ ├── utils.ts              # Helper utilities
+│ ├── index.css             # Global styles
+│ ├── main.tsx              # App entry point
+├── index.html              # Vite entry HTML
+├── vite.config.ts          # Vite configuration
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### Design Approach
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+- **Component‑driven architecture**: UI is divided into small, reusable components.
+- **Local storage persistence**: A custom hook (useLocalStorage) stores product data without backend requirements.
+- **Modular structure**: Components, hooks, and utilities are separated for readability and scalability.
+- **Type safety**: Shared interfaces (types.ts) ensure consistency across features.
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## ✨ Features
+
+**1. Product List**
+
+A responsive grid (1–3 columns) displaying each product’s **name, SKU, price, quantity, category, and stock status**. Stock is color-coded: **0 → Out of Stock (rose), 1–10 → Low Stock (amber), >10 → In Stock (emerald)**. Click a card to edit or use the trash icon to delete.
+
+**2. Add New Product**
+
+Clicking **Add Product** opens a modal form for **Name, SKU, Price, Quantity, and Category**. All fields are required; **Price > 0, Quantity ≥ 0, SKU must be unique**. The same modal is used for editing, with fields pre-filled.
+
+**3. Edit Product**
+
+Clicking a product opens the modal in **edit mode** with pre-filled data. **SKU validation** ignores the original SKU, and updates are saved instantly to **localStorage**.
+
+**4. Delete Product**
+
+A **confirmation modal** prevents accidental deletion. Background clicks are blocked, and deletion requires explicit confirmation via the **Delete** button.
+
+**5. Search & Filter System**
+
+Search by **name or SKU** and filter by **category** or **stock status**. Filters and search can be **combined** for precise results.
+
+**6. Data Persistence**
+
+Data is stored via a custom `useLocalStorage()` hook under the key `products_data`. Persists across reloads and loads mock data only on first run.
+
+## 📝 Assumptions Made
+
+- The app does not use a backend; all product data persists using localStorage.
+- Product images are not required; the dashboard focuses on text‑based product fields.
+- No authentication layer is required for this project.
+- Modal interactions (add/edit/delete) are sufficient for the required CRUD functionality.
+
+## 🎯 Conclusion
+
+This Product Inventory Dashboard is an easy-to-use tool to manage products. It has a responsive design, saves data, and uses simple modals, making it useful for small inventory tasks or as a base for bigger projects.
