@@ -2,7 +2,7 @@
 
 A single-page React + TypeScript application for managing product inventory with full CRUD functionality, search/filter features, and persistent local storage.
 
-🔗 **Live Demo:** http://localhost:5173
+🔗 **Live Demo:** [https://asgardworld-product-inventory-dashb.vercel.app/](https://asgardworld-product-inventory-dashb.vercel.app/)
 
 ## 🛠 Tech Stack
 
