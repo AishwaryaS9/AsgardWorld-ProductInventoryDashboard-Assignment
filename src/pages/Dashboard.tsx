@@ -1,10 +1,12 @@
 import { useMemo, useState } from 'react';
 import { FaSearch } from 'react-icons/fa';
+import { FiFilter } from 'react-icons/fi';
 import { useLocalStorage } from '../hooks/useLocalStorage';
 import type { Category, Product } from '../types';
 import { MOCK_DATA, stockStatus } from '../utils';
-import { FiFilter } from 'react-icons/fi';
 import ProductCard from '../components/ProductCard';
+import ProductModal from '../components/ProductModal';
+import DeleteModal from '../components/DeleteModal';
 
 const Dashboard = () => {
     const CATEGORIES: Category[] = ['electronics', 'furniture', 'stationery'];
@@ -12,6 +14,48 @@ const Dashboard = () => {
     const [query, setQuery] = useState('');
     const [filterCategory, setFilterCategory] = useState<string>('all');
     const [filterStock, setFilterStock] = useState<string>('all');
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+    const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+    const [productToDelete, setProductToDelete] = useState<Product | null>(null);
+
+    const openAddModal = () => {
+        setEditingProduct(null);
+        setIsModalOpen(true);
+    };
+
+    const openEditModal = (product: Product) => {
+        setEditingProduct(product);
+        setIsModalOpen(true);
+    };
+
+    const handleSaveProduct = (data: Omit<Product, "id"> & { id?: string }) => {
+        if (editingProduct) {
+            const updated = products.map(product =>
+                product.id === editingProduct.id ? { ...product, ...data, id: data.sku } : product
+            );
+            setProducts(updated);
+        } else {
+            const newProduct: Product = { id: data.sku, ...data };
+            setProducts([...products, newProduct]);
+        }
+
+        setIsModalOpen(false);
+        setEditingProduct(null);
+    };
+
+    const openDeleteModal = (product: Product) => {
+        setProductToDelete(product);
+        setIsDeleteOpen(true);
+    };
+
+    const handleConfirmDelete = () => {
+        if (productToDelete) {
+            setProducts(products.filter(product => product.id !== productToDelete.id));
+        }
+        setIsDeleteOpen(false);
+        setProductToDelete(null);
+    };
 
     const filtered = useMemo(() => {
         const searchTerm = query.trim().toLowerCase();
@@ -37,7 +81,7 @@ const Dashboard = () => {
                 </h1>
             </header>
             <div className="flex mb-6 justify-end">
-                <button
+                <button onClick={openAddModal}
                     className="bg-indigo-600 text-white rounded-md px-4 py-2 hover:bg-indigo-700 focus:outline-none focus:ring-1 focus:ring-indigo-400 focus:ring-offset-1 cursor-pointer"
                     aria-label="Add new product"
                 >
@@ -110,6 +154,8 @@ const Dashboard = () => {
                         <ProductCard
                             key={item.id}
                             product={item}
+                            onEdit={() => openEditModal(item)}
+                            onDelete={() => openDeleteModal(item)}
                         />
                     ))
                 ) : (
@@ -118,6 +164,26 @@ const Dashboard = () => {
                     </p>
                 )}
             </section>
+
+            {isModalOpen && (
+                <ProductModal
+                    onClose={() => setIsModalOpen(false)}
+                    onSave={handleSaveProduct}
+                    existing={editingProduct}
+                    existingSkus={products
+                        .filter(product => product.id !== editingProduct?.id)
+                        .map(product => product.sku.toLowerCase())
+                    }
+                />
+            )}
+
+            {isDeleteOpen && (
+                <DeleteModal
+                    message="Are you sure you want to delete this product?"
+                    onCancel={() => setIsDeleteOpen(false)}
+                    onDelete={handleConfirmDelete}
+                />
+            )}
         </main>
     )
 }

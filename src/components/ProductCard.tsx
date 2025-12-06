@@ -4,9 +4,11 @@ import type { Product } from '../types';
 
 interface Props {
     product: Product;
+    onEdit: () => void;
+    onDelete: () => void;
 }
 
-const ProductCard = ({ product }: Props) => {
+const ProductCard = ({ product, onEdit, onDelete }: Props) => {
     const status = stockStatus(product.quantity);
 
     const getStatusTagColor = () => {
@@ -22,6 +24,7 @@ const ProductCard = ({ product }: Props) => {
 
     return (
         <article className='rounded-xl bg-white py-4 shadow-sm border border-gray-200/50 cursor-pointer outline-none'
+            onClick={onEdit}
             role="button"
             tabIndex={0}
             aria-label={`Edit product ${product.name}, SKU ${product.sku}`}>
@@ -57,6 +60,7 @@ const ProductCard = ({ product }: Props) => {
                     <button
                         onClick={(e) => {
                             e.stopPropagation();
+                            onDelete();
                         }}
                         className="p-1 cursor-pointer"
                         aria-label={`Delete product ${product.name}`}
